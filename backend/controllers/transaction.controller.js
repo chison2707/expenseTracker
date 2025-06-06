@@ -135,3 +135,58 @@ export const dashboard = async (req, res) => {
         });
     }
 };
+
+// [POST]/api/v1/transactions/addTransaction/:accountId
+export const addTransaction = async (req, res) => {
+    try {
+        const userId = req.user.id;
+        const accountId = req.params.accountId;
+        const { description, source, amount } = req.body;
+
+        const result = await pool.query({
+            text: `SELECT * FROM tbltransaction WHERE id = $1`,
+            values: [accountId],
+        });
+
+        const accountInfo = result.rows[0];
+
+        if (!accountInfo) {
+            return res.json({
+                status: 400,
+                message: "Không tìm thấy tài khoản"
+            });
+        }
+
+        if (accountInfo.account_balance <= 0 || accountInfo.account_balance < parseInt(amount)) {
+            return res.json({
+                status: 400,
+                message: "Số dư tài khoản không đủ!"
+            });
+        }
+
+        // Begin Transaction
+        await pool.query("BEGIN");
+
+        await pool.query({
+            text: `UPDATE tblaccount SET account_balance = account_balance - $1, updatedat = CURRENT_TIMESTAMP WHERE id = $2`,
+            values: [parseInt(amount), accountId],
+        });
+
+        await pool.query({
+            text: `INSERT INTO tbltransaction(user_id, description, type, status, amount, source) VALUES($1, $2, $3, $4, $5, $6)`,
+            values: [userId, description, "expense", "Completed", amount, source],
+        });
+
+        await pool.query("COMMIT");
+
+        return res.json({
+            status: 200,
+            message: "Giao dịch thành công!",
+        });
+    } catch (error) {
+        return res.json({
+            status: 500,
+            message: error.message
+        });
+    }
+}
