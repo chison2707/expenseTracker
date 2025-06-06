@@ -87,6 +87,7 @@ export const createAccount = async (req, res) => {
     }
 };
 
+// [PATCH]/api/v1/accounts/addMonney/:userId/:id
 export const addMoneyToAccount = async (req, res) => {
     try {
         const userId = req.params.userId;
