@@ -22,6 +22,7 @@ export const getAccounts = async (req, res) => {
     }
 };
 
+// [POST]/api/v1/accoutns/create/:userId
 export const createAccount = async (req, res) => {
     try {
         const userId = req.params.userId;
@@ -73,13 +74,56 @@ export const createAccount = async (req, res) => {
         };
         await pool.query(initialDepositQuery);
 
-        res.json({
+        return res.json({
             status: 200,
             message: "Tạo tài khoản thành công!",
             data: account,
         });
     } catch (error) {
-        res.json({
+        return res.json({
+            status: 500,
+            message: error.message
+        });
+    }
+};
+
+export const addMoneyToAccount = async (req, res) => {
+    try {
+        const userId = req.params.userId;
+        const { id } = req.params;
+        const { amount } = req.body;
+
+        const newAmount = parseInt(amount);
+
+        const result = await pool.query({
+            text: `UPDATE tblaccount SET account_balance =(account_balance + $1), updatedat = CURRENT_TIMESTAMP  WHERE id = $2 RETURNING *`,
+            values: [newAmount, id],
+        });
+
+        const accountInformation = result.rows[0];
+
+        const description = accountInformation.account_name + " (Tiền gửi)";
+
+        const transQuery = {
+            text: `INSERT INTO tbltransaction(user_id, description, type, status, amount, source) VALUES($1, $2, $3, $4, $5, $6) RETURNING *`,
+            values: [
+                userId,
+                description,
+                "income",
+                "Completed",
+                amount,
+                accountInformation.account_name,
+            ],
+        };
+        await pool.query(transQuery);
+
+        return res.json({
+            status: 200,
+            message: "Nạp tiền thành công!",
+            data: accountInformation,
+        });
+    } catch (error) {
+        return res.json({
             status: 500,
             message: error.message
         });
