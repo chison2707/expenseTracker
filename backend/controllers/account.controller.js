@@ -1,9 +1,9 @@
 import { pool } from "../config/database.js";
 
-// [GET]/api/v1/accoutns/:userId
+// [GET]/api/v1/accoutns
 export const getAccounts = async (req, res) => {
     try {
-        const userId = req.params.userId;
+        const userId = req.user.id;
 
         const accounts = await pool.query({
             text: `SELECT * FROM tblaccount WHERE user_id = $1`,
@@ -22,10 +22,10 @@ export const getAccounts = async (req, res) => {
     }
 };
 
-// [POST]/api/v1/accoutns/create/:userId
+// [POST]/api/v1/accoutns/create
 export const createAccount = async (req, res) => {
     try {
-        const userId = req.params.userId;
+        const userId = req.user.id;
 
         const { name, amount, account_number } = req.body;
 
@@ -87,10 +87,10 @@ export const createAccount = async (req, res) => {
     }
 };
 
-// [PATCH]/api/v1/accounts/addMonney/:userId/:id
+// [PATCH]/api/v1/accounts/addMonney/:id
 export const addMoneyToAccount = async (req, res) => {
     try {
-        const userId = req.params.userId;
+        const userId = req.user.id;
         const { id } = req.params;
         const { amount } = req.body;
 
