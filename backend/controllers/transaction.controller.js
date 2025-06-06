@@ -97,7 +97,7 @@ export const dashboard = async (req, res) => {
                 monthData.find((item) => item.type === "expense")?.totalamount || 0;
 
             return {
-                label: getMonthName(index),
+                month: getMonthName(index),
                 income,
                 expense,
             };
