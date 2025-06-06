@@ -1,8 +1,9 @@
 import express from "express";
 import { requireAuth } from "../middlewares/auth.middleware.js";
-import { getTransactions } from "../controllers/transaction.controller.js";
+import { dashboard, getTransactions } from "../controllers/transaction.controller.js";
 
 const router = express.Router();
-router.get("/:userId", requireAuth, getTransactions);
+router.get("/", requireAuth, getTransactions);
+router.get("/dashboard", requireAuth, dashboard);
 
 export default router;
