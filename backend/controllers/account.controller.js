@@ -1,4 +1,4 @@
-import { pool } from "../config/database";
+import { pool } from "../config/database.js";
 
 export const getAccounts = async (req, res) => {
     try {
@@ -11,7 +11,7 @@ export const getAccounts = async (req, res) => {
 
         return res.json({
             status: 200,
-            data: accounts.rows[0],
+            data: accounts.rows,
         });
     } catch (error) {
         res.json({
