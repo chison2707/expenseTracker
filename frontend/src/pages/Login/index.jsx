@@ -1,24 +1,45 @@
 import { useNavigate } from "react-router-dom";
 import { login } from "../../services/userService";
+import { setCookie } from "../../helpers/cookie";
+import { useDispatch } from "react-redux";
+import { checkLogin } from "../../action/login";
+import { Alert } from 'antd';
+import { useState } from "react";
 
 const Login = () => {
+    const dispatch = useDispatch();
     const navigate = useNavigate();
+    const [errorMessage, setErrorMessage] = useState('');
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         const email = e.target[0].value;
         const password = e.target[1].value;
         const result = await login({ email, password });
-        if (result.length === 0) {
-            alert("Email hoặc mật khẩu không đúng");
+
+        console.log(result);
+
+        if (result.status === 400) {
+            setErrorMessage(result.message);
             return;
         }
 
+
+        setErrorMessage('');
         navigate("/");
         setCookie("token", result.token, 1);
+        dispatch(checkLogin(true));
     }
     return (
         <>
+            {errorMessage && (
+                <Alert
+                    type="error"
+                    message={errorMessage}
+                    closable
+                    className="mb-4"
+                />
+            )}
             <div className="min-h-screen bg-gray-100 flex items-center justify-center">
                 <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
                     <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">Đăng Nhập</h2>
