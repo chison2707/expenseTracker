@@ -47,8 +47,7 @@ export const dashboard = async (req, res) => {
         let totalExpense = 0;
 
         const transactionsResult = await pool.query({
-            text: `SELECT type, SUM(amount) AS totalAmount FROM 
-    tbltransaction WHERE user_id = $1 GROUP BY type`,
+            text: `SELECT type, SUM(amount) AS totalAmount FROM tbltransaction WHERE user_id = $1 GROUP BY type`,
             values: [userId],
         });
 
@@ -183,6 +182,89 @@ export const addTransaction = async (req, res) => {
             status: 200,
             message: "Giao dịch thành công!",
         });
+    } catch (error) {
+        return res.json({
+            status: 500,
+            message: error.message
+        });
+    }
+}
+
+// [PATCH]/api/v1/transactions/transferMoney
+export const tranferMoney = async (req, res) => {
+    try {
+        const userId = req.user.id;
+        const { fromAccount, toAccount } = req.body;
+        const amount = parseInt(req.body.amount);
+
+        const fromAccResult = await pool.query({
+            text: `SELECT * FROM tblaccount WHERE id = $1`,
+            values: [fromAccount],
+        });
+
+        const fromAcc = fromAccResult.rows[0];
+
+        if (!fromAcc) {
+            return res.json({
+                status: 400,
+                message: "Thông tin tài khoản không hợp lệ!"
+            });
+        }
+
+        if (amount > fromAcc.account_balance) {
+            return res.json({
+                status: 400,
+                message: "Thông tin tài khoản không hợp lệ!"
+            });
+        }
+
+        await pool.query("BEGIN");
+
+        await pool.query({
+            text: `UPDATE tblaccount SET account_balance = account_balance - $1, updatedat = CURRENT_TIMESTAMP WHERE id = $2`,
+            values: [amount, fromAccount],
+        });
+
+        const toAcc = await pool.query({
+            text: `UPDATE tblaccount SET account_balance = account_balance + $1, updatedat = CURRENT_TIMESTAMP WHERE id = $2 RETURNING *`,
+            values: [amount, toAccount],
+        });
+
+        const description = `Chuyển tiền từ (${fromAcc.account_name} sang ${toAcc.rows[0].account_name})`;
+
+        await pool.query({
+            text: `INSERT INTO tbltransaction(user_id, description, type, status, amount, source) VALUES($1, $2, $3, $4, $5, $6)`,
+            values: [
+                userId,
+                description,
+                "expense",
+                "Completed",
+                amount,
+                fromAcc.account_name,
+            ],
+        });
+
+        const description1 = `Nhận tiền từ (${fromAcc.account_name} sang ${toAcc.rows[0].account_name})`;
+
+        await pool.query({
+            text: `INSERT INTO tbltransaction(user_id, description, type, status, amount, source) VALUES($1, $2, $3, $4, $5, $6)`,
+            values: [
+                userId,
+                description1,
+                "income",
+                "Completed",
+                amount,
+                toAcc.rows[0].account_name,
+            ],
+        });
+
+        await pool.query("COMMIT");
+
+        return res.json({
+            status: 200,
+            message: "Giao dịch thành công!",
+        });
+
     } catch (error) {
         return res.json({
             status: 500,
