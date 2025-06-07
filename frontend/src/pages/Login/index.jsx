@@ -1,6 +1,21 @@
-const Login = () => {
-    const handleSubmit = (e) => {
+import { useNavigate } from "react-router-dom";
+import { login } from "../../services/userService";
 
+const Login = () => {
+    const navigate = useNavigate();
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        const email = e.target[0].value;
+        const password = e.target[1].value;
+        const result = await login({ email, password });
+        if (result.length === 0) {
+            alert("Email hoặc mật khẩu không đúng");
+            return;
+        }
+
+        navigate("/");
+        setCookie("token", result.token, 1);
     }
     return (
         <>
