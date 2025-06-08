@@ -3,6 +3,7 @@ import Register from "../pages/Register";
 import PrivateRoute from "../components/PrivateRoute";
 import Dashboard from "../pages/Dashboard";
 import LayoutDefault from "../Layout/LayoutDefault";
+import Logout from "../pages/Logout";
 
 export const routes = [
     {
@@ -24,41 +25,12 @@ export const routes = [
                         path: "/",
                         element: <Dashboard />
                     },
+                    {
+                        path: "/logout",
+                        element: <Logout />
+                    },
                 ]
-            },
-            // {
-            //     path: "login",
-            //     element: <Login />
-            // },
-            // {
-            //     path: "register",
-            //     element: <Register />
-            // },
-            // {
-            //     path: "logout",
-            //     element: <Logout />
-            // },
-            // {
-            //     element: <PrivateRoute />,
-            //     children: [
-            //         {
-            //             path: "answers",
-            //             element: <Answers />
-            //         },
-            //         {
-            //             path: "quiz",
-            //             element: <Quiz />
-            //         },
-            //         {
-            //             path: "result",
-            //             element: <Result />
-            //         },
-            //         {
-            //             path: "topic",
-            //             element: <Topic />
-            //         }
-            //     ]
-            // }
+            }
         ]
     }
 ]
