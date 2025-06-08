@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { login } from "../../services/userService";
 import { setCookie } from "../../helpers/cookie";
 import { useDispatch } from "react-redux";
@@ -77,9 +77,9 @@ const Login = () => {
                             Đăng Nhập
                         </button>
                         <div className="mt-4 text-center">
-                            <a href="#" className="text-sm text-blue-600 hover:underline">
-                                Quên mật khẩu?
-                            </a>
+                            <NavLink to="/register" className="text-sm text-blue-600 hover:underline">
+                                Đăng ký
+                            </NavLink>
                         </div>
                     </form>
                 </div>
