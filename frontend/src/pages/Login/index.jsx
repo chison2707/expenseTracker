@@ -17,8 +17,6 @@ const Login = () => {
         const password = e.target[1].value;
         const result = await login({ email, password });
 
-        console.log(result);
-
         if (result.status === 400) {
             setErrorMessage(result.message);
             return;

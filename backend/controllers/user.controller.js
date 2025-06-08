@@ -5,7 +5,7 @@ import { generateRandomString } from "../helpers/token.js";
 // [POST]/api/v1/users/register
 export const register = async (req, res) => {
     try {
-        const { firstName, lastName, email, password, phoneNumber, country, currency } = req.body;
+        const { firstName, lastName, email, password, phoneNumber } = req.body;
 
         const userExist = await pool.query({
             text: "SELECT EXISTS (SELECT * FROM tbluser WHERE email = $1)",
@@ -20,15 +20,15 @@ export const register = async (req, res) => {
         }
 
         const hashedPassword = await hashPassword(password);
-        const tokenUser = generateRandomString(10);
+        const tokenUser = generateRandomString(14);
 
         const user = await pool.query({
             text: `
-                INSERT INTO tbluser (firstName, lastName, email,phone_number,country, password, tokenuser, currency)
-                VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+                INSERT INTO tbluser (firstName, lastName, email,phone_number, password, tokenuser)
+                VALUES ($1, $2, $3, $4, $5, $6)
                 RETURNING *
             `,
-            values: [firstName, lastName, email, phoneNumber, country, hashedPassword, tokenUser, currency]
+            values: [firstName, lastName, email, phoneNumber, hashedPassword, tokenUser]
         });
 
         res.json({

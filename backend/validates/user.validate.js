@@ -12,12 +12,6 @@ export const registerPost = (req, res, next) => {
     if (!req.body.phoneNumber) {
         errors.push('Vui lòng nhập số điện thoại!');
     }
-    if (!req.body.country) {
-        errors.push('Vui lòng nhập đất nước của bạn!');
-    }
-    if (!req.body.currency) {
-        errors.push('Vui lòng nhập đơn vị tiền tệ!');
-    }
     if (!req.body.password) {
         errors.push('Vui lòng nhập mật khẩu!');
     }
@@ -35,8 +29,8 @@ export const registerPost = (req, res, next) => {
     }
 
     if (errors.length > 0) {
-        return res.status(400).json({
-            success: false,
+        return res.json({
+            status: 422,
             errors: errors
         });
     }
@@ -53,8 +47,8 @@ export const login = (req, res, next) => {
     }
 
     if (errors.length > 0) {
-        return res.status(400).json({
-            success: false,
+        return res.json({
+            status: 422,
             errors: errors
         });
     }

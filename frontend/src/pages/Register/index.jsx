@@ -1,10 +1,60 @@
+import '@ant-design/v5-patch-for-react-19';
+import { message } from "antd";
+import { setCookie } from "../../helpers/cookie";
+import { register } from "../../services/userService";
+import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { checkLogin } from '../../action/login';
+
 const Register = () => {
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        const email = e.target[0].value;
+        const lastName = e.target[1].value;
+        const firstName = e.target[2].value;
+        const phoneNumber = e.target[3].value;
+        const password = e.target[4].value;
+        const confirmPassword = e.target[5].value;
+
+        const options = {
+            lastName: lastName,
+            firstName: firstName,
+            phoneNumber: phoneNumber,
+            email: email,
+            password: password,
+            confirmPassword: confirmPassword
+        }
+
+        const result = await register(options);
+
+        if (result.status === 422) {
+            result.errors.forEach(err => {
+                message.error(err);
+            });
+            return;
+        }
+
+        if (result.status === 400) {
+            message.error(result.message);
+            return;
+        }
+
+        message.success(result.message);
+        navigate("/")
+        setCookie("token", result.user.tokenuser, 1);
+        dispatch(checkLogin(true));
+    }
+
     return (
         <>
             <div className="min-h-screen bg-gray-100 flex items-center justify-center">
                 <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
                     <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">Đăng ký tài khoản</h2>
-                    <form className="space-y-4">
+                    <form className="space-y-4" onSubmit={handleSubmit}>
                         <div>
                             <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
                             <input
