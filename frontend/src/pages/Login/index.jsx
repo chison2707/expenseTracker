@@ -3,13 +3,11 @@ import { login } from "../../services/userService";
 import { setCookie } from "../../helpers/cookie";
 import { useDispatch } from "react-redux";
 import { checkLogin } from "../../action/login";
-import { Alert } from 'antd';
-import { useState } from "react";
+import { message } from "antd";
 
 const Login = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const [errorMessage, setErrorMessage] = useState('');
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -17,27 +15,25 @@ const Login = () => {
         const password = e.target[1].value;
         const result = await login({ email, password });
 
-        if (result.status === 400) {
-            setErrorMessage(result.message);
+        if (result.status === 422) {
+            result.errors.forEach(err => {
+                message.error(err);
+            });
             return;
         }
 
+        if (result.status === 400) {
+            message.error(result.message);
+            return;
+        }
 
-        setErrorMessage('');
+        message.success(result.message);
         navigate("/");
         setCookie("token", result.token, 1);
         dispatch(checkLogin(true));
     }
     return (
         <>
-            {errorMessage && (
-                <Alert
-                    type="error"
-                    message={errorMessage}
-                    closable
-                    className="mb-4"
-                />
-            )}
             <div className="min-h-screen bg-gray-100 flex items-center justify-center">
                 <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
                     <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">Đăng Nhập</h2>

@@ -2,7 +2,7 @@ import '@ant-design/v5-patch-for-react-19';
 import { message } from "antd";
 import { setCookie } from "../../helpers/cookie";
 import { register } from "../../services/userService";
-import { useNavigate } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { checkLogin } from '../../action/login';
 
@@ -125,6 +125,11 @@ const Register = () => {
                         >
                             Đăng ký
                         </button>
+                        <div className="text-center">
+                            <NavLink to="/login" className="text-sm text-blue-600 hover:underline">
+                                Đã có tài khoản
+                            </NavLink>
+                        </div>
                     </form>
                 </div>
             </div>
