@@ -2,6 +2,7 @@ import Login from "../pages/Login";
 import Register from "../pages/Register";
 import PrivateRoute from "../components/PrivateRoute";
 import Dashboard from "../pages/Dashboard";
+import LayoutDefault from "../Layout/LayoutDefault";
 
 export const routes = [
     {
@@ -17,8 +18,13 @@ export const routes = [
         element: <PrivateRoute />,
         children: [
             {
-                path: "/",
-                element: <Dashboard />
+                element: <LayoutDefault />,
+                children: [
+                    {
+                        path: "/",
+                        element: <Dashboard />
+                    },
+                ]
             },
             // {
             //     path: "login",

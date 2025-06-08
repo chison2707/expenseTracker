@@ -1,4 +1,3 @@
-import '@ant-design/v5-patch-for-react-19';
 import { message } from "antd";
 import { setCookie } from "../../helpers/cookie";
 import { register } from "../../services/userService";
