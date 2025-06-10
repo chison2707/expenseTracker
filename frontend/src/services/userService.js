@@ -1,4 +1,5 @@
 import { post } from "../utils/request";
+import { getAuth } from "../utils/requestAuth";
 
 export const login = async (options) => {
     const result = await post(`users/login`, options);
@@ -7,5 +8,10 @@ export const login = async (options) => {
 
 export const register = async (options) => {
     const result = await post(`users/register`, options);
+    return result;
+}
+
+export const detail = async (token) => {
+    const result = await getAuth(`users/detail`, token);
     return result;
 }
