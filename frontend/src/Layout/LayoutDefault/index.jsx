@@ -33,8 +33,8 @@ function LayoutDefault() {
                                 </NavLink>
                             </li>
                             <li>
-                                <NavLink to="/settings">
-                                    Cài đặt
+                                <NavLink to="/editUser">
+                                    Chỉnh sửa thông tin cá nhân
                                 </NavLink>
                             </li>
                         </ul>

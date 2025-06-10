@@ -8,6 +8,8 @@ import { Line, Pie } from '@ant-design/plots';
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { checkLogin } from "../../action/login";
+import Skeleton from 'react-loading-skeleton'
+import 'react-loading-skeleton/dist/skeleton.css'
 
 const Dashboard = () => {
     const dispatch = useDispatch();
@@ -81,117 +83,119 @@ const Dashboard = () => {
 
     return (
         <>
-            <div className="p-2 bg-gray-50 min-h-screen">
-                <div className="mb-6">
-                    <h1 className="text-2xl font-bold text-gray-800">Dashboard</h1>
-                    <p className="text-sm text-gray-500">Theo dõi hoạt động tài chính của bạn</p>
-                </div>
+            {data.length === 0 ? (<Skeleton count={3} />) : (
+                <div className="p-2 bg-gray-50 min-h-screen">
+                    <div className="mb-6">
+                        <h1 className="text-2xl font-bold text-gray-800">Dashboard</h1>
+                        <p className="text-sm text-gray-500">Theo dõi hoạt động tài chính của bạn</p>
+                    </div>
 
-                <Row gutter={[16, 16]}>
-                    <Col xs={24} md={8}>
-                        <Card>
-                            <div className="flex items-center gap-4">
-                                <AiOutlineDollarCircle size={32} className="text-blue-500" />
-                                <div>
-                                    <p className="text-gray-500">Số dư</p>
-                                    <p className="text-xl font-semibold">{formatCurrency(data.availableBalance)}</p>
-                                    <p className="text-xs text-gray-400">Tổng số dư hiện tại</p>
-                                </div>
-                            </div>
-                        </Card>
-                    </Col>
-
-                    <Col xs={24} md={8}>
-                        <Card>
-                            <div className="flex items-center gap-4">
-                                <AiOutlineArrowUp size={32} className="text-green-500" />
-                                <div>
-                                    <p className="text-gray-500">Tổng thu nhập</p>
-                                    <p className="text-xl font-semibold">{formatCurrency(data.totalIncome)}</p>
-                                    <p className="text-xs text-gray-400">Tổng thu nhập</p>
-                                </div>
-                            </div>
-                        </Card>
-                    </Col>
-
-                    <Col xs={24} md={8}>
-                        <Card>
-                            <div className="flex items-center gap-4">
-                                <AiOutlineArrowDown size={32} className="text-red-500" />
-                                <div>
-                                    <p className="text-gray-500">Tổng chi tiêu</p>
-                                    <p className="text-xl font-semibold">{formatCurrency(data.totalExpense)}</p>
-                                    <p className="text-xs text-gray-400">Tổng chi tiêu</p>
-                                </div>
-                            </div>
-                        </Card>
-                    </Col>
-                </Row>
-
-                <div className="mt-5">
-                    <h2 className="text-l font-bold text-gray-800 mb-3">Biểu đồ thống kê thu chi</h2>
                     <Row gutter={[16, 16]}>
-                        <Col md={16}>
-                            <Line {...config} />
+                        <Col xs={24} md={8}>
+                            <Card>
+                                <div className="flex items-center gap-4">
+                                    <AiOutlineDollarCircle size={32} className="text-blue-500" />
+                                    <div>
+                                        <p className="text-gray-500">Số dư</p>
+                                        <p className="text-xl font-semibold">{formatCurrency(data.availableBalance)}</p>
+                                        <p className="text-xs text-gray-400">Tổng số dư hiện tại</p>
+                                    </div>
+                                </div>
+                            </Card>
                         </Col>
-                        <Col md={8}>
-                            <Pie {...configPie} />
+
+                        <Col xs={24} md={8}>
+                            <Card>
+                                <div className="flex items-center gap-4">
+                                    <AiOutlineArrowUp size={32} className="text-green-500" />
+                                    <div>
+                                        <p className="text-gray-500">Tổng thu nhập</p>
+                                        <p className="text-xl font-semibold">{formatCurrency(data.totalIncome)}</p>
+                                        <p className="text-xs text-gray-400">Tổng thu nhập</p>
+                                    </div>
+                                </div>
+                            </Card>
+                        </Col>
+
+                        <Col xs={24} md={8}>
+                            <Card>
+                                <div className="flex items-center gap-4">
+                                    <AiOutlineArrowDown size={32} className="text-red-500" />
+                                    <div>
+                                        <p className="text-gray-500">Tổng chi tiêu</p>
+                                        <p className="text-xl font-semibold">{formatCurrency(data.totalExpense)}</p>
+                                        <p className="text-xs text-gray-400">Tổng chi tiêu</p>
+                                    </div>
+                                </div>
+                            </Card>
                         </Col>
                     </Row>
-                </div>
 
-                <div className="mt-5">
-                    <h2 className="text-lg font-bold text-gray-800 mb-3">Những giao dịch gần đây</h2>
-                    <div className="overflow-x-auto">
-                        <table className="table-auto w-full border border-gray-300 rounded-lg text-sm">
-                            <thead className="bg-gray-500">
-                                <tr>
-                                    <th className="border text-white px-4 py-2 text-left">Ngày giao dịch</th>
-                                    <th className="border text-white px-4 py-2 text-left">Chi tiết</th>
-                                    <th className="border text-white px-4 py-2 text-left">Trạng thái</th>
-                                    <th className="border text-white px-4 py-2 text-left">Nguồn</th>
-                                    <th className="border text-white px-4 py-2 text-right">Số tiền</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {data?.lastTransactions && data.lastTransactions.length > 0 ? (
-                                    data.lastTransactions.map((transaction) => (
-                                        <tr key={transaction.id} className="hover:bg-gray-100">
-                                            <td className="border px-4 py-2">
-                                                {new Date(transaction.createdat).toLocaleDateString()}
-                                            </td>
-                                            <td className="border px-4 py-2">{transaction.description}</td>
-                                            <td className="border px-4 py-2">
-                                                <span
-                                                    className={`inline-block px-2 py-1 rounded text-xs font-medium ${transaction.status === "Completed"
-                                                        ? 'bg-green-100 text-green-700'
-                                                        : transaction.status === 'expense'
-                                                            ? 'bg-yellow-100 text-yellow-700'
-                                                            : 'bg-red-100 text-red-700'
-                                                        }`}
-                                                >
-                                                    {transaction.status}
-                                                </span>
-                                            </td>
-                                            <td className="border px-4 py-2">{transaction.source}</td>
-                                            <td className="border px-4 py-2 text-right">
-                                                {formatCurrency(parseFloat(transaction.amount))}
+                    <div className="mt-5">
+                        <h2 className="text-l font-bold text-gray-800 mb-3">Biểu đồ thống kê thu chi</h2>
+                        <Row gutter={[16, 16]}>
+                            <Col md={16}>
+                                <Line {...config} />
+                            </Col>
+                            <Col md={8}>
+                                <Pie {...configPie} />
+                            </Col>
+                        </Row>
+                    </div>
+
+                    <div className="mt-5">
+                        <h2 className="text-lg font-bold text-gray-800 mb-3">Những giao dịch gần đây</h2>
+                        <div className="overflow-x-auto">
+                            <table className="table-auto w-full border border-gray-300 rounded-lg text-sm">
+                                <thead className="bg-gray-500">
+                                    <tr>
+                                        <th className="border text-white px-4 py-2 text-left">Ngày giao dịch</th>
+                                        <th className="border text-white px-4 py-2 text-left">Chi tiết</th>
+                                        <th className="border text-white px-4 py-2 text-left">Trạng thái</th>
+                                        <th className="border text-white px-4 py-2 text-left">Nguồn</th>
+                                        <th className="border text-white px-4 py-2 text-right">Số tiền</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {data?.lastTransactions && data.lastTransactions.length > 0 ? (
+                                        data.lastTransactions.map((transaction) => (
+                                            <tr key={transaction.id} className="hover:bg-gray-100">
+                                                <td className="border px-4 py-2">
+                                                    {new Date(transaction.createdat).toLocaleDateString()}
+                                                </td>
+                                                <td className="border px-4 py-2">{transaction.description}</td>
+                                                <td className="border px-4 py-2">
+                                                    <span
+                                                        className={`inline-block px-2 py-1 rounded text-xs font-medium ${transaction.status === "Completed"
+                                                            ? 'bg-green-100 text-green-700'
+                                                            : transaction.status === 'expense'
+                                                                ? 'bg-yellow-100 text-yellow-700'
+                                                                : 'bg-red-100 text-red-700'
+                                                            }`}
+                                                    >
+                                                        {transaction.status}
+                                                    </span>
+                                                </td>
+                                                <td className="border px-4 py-2">{transaction.source}</td>
+                                                <td className="border px-4 py-2 text-right">
+                                                    {formatCurrency(parseFloat(transaction.amount))}
+                                                </td>
+                                            </tr>
+                                        ))
+                                    ) : (
+                                        <tr>
+                                            <td colSpan="5" className="text-center py-4 text-gray-500">
+                                                Không có dữ liệu
                                             </td>
                                         </tr>
-                                    ))
-                                ) : (
-                                    <tr>
-                                        <td colSpan="5" className="text-center py-4 text-gray-500">
-                                            Không có dữ liệu
-                                        </td>
-                                    </tr>
-                                )}
-                            </tbody>
-                        </table>
+                                    )}
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
-                </div>
 
-            </div>
+                </div>
+            )}
         </>
     )
 }

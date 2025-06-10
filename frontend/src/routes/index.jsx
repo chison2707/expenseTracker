@@ -4,6 +4,7 @@ import PrivateRoute from "../components/PrivateRoute";
 import Dashboard from "../pages/Dashboard";
 import LayoutDefault from "../Layout/LayoutDefault";
 import Logout from "../pages/Logout";
+import EditUser from "../pages/EditUser";
 
 export const routes = [
     {
@@ -28,6 +29,10 @@ export const routes = [
                     {
                         path: "/logout",
                         element: <Logout />
+                    },
+                    {
+                        path: "/editUser",
+                        element: <EditUser />
                     },
                 ]
             }
