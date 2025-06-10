@@ -8,9 +8,9 @@ export const requireAuth = async (req, res, next) => {
             values: [token]
         });
 
-        if (!user) {
+        if (user.rows.length === 0) {
             return res.json({
-                code: 400,
+                code: 401,
                 message: 'Token không hợp lệ'
             });
         }

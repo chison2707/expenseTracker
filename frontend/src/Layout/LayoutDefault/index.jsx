@@ -23,13 +23,18 @@ function LayoutDefault() {
                                 </NavLink>
                             </li>
                             <li>
-                                <NavLink to="/topic">
-                                    Topic
+                                <NavLink to="/transactions">
+                                    Giao dịch
                                 </NavLink>
                             </li>
                             <li>
-                                <NavLink to="/answers">
-                                    Answers
+                                <NavLink to="/accounts">
+                                    Nguồn tiền
+                                </NavLink>
+                            </li>
+                            <li>
+                                <NavLink to="/settings">
+                                    Cài đặt
                                 </NavLink>
                             </li>
                         </ul>
