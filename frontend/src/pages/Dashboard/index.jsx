@@ -27,10 +27,12 @@ const Dashboard = () => {
             setData(result);
         };
 
-        console.log(data);
 
         fetchDashboard();
     }, []);
+
+    console.log(data);
+
 
     const transformedChartData = data.chartData?.flatMap(item => [
         {
@@ -142,28 +144,28 @@ const Dashboard = () => {
                     <h2 className="text-lg font-bold text-gray-800 mb-3">Những giao dịch gần đây</h2>
                     <div className="overflow-x-auto">
                         <table className="table-auto w-full border border-gray-300 rounded-lg text-sm">
-                            <thead className="bg-gray-100">
+                            <thead className="bg-gray-500">
                                 <tr>
-                                    <th className="border px-4 py-2 text-left">Ngày giao dịch</th>
-                                    <th className="border px-4 py-2 text-left">Chi tiết</th>
-                                    <th className="border px-4 py-2 text-left">Trạng thái</th>
-                                    <th className="border px-4 py-2 text-left">Nguồn</th>
-                                    <th className="border px-4 py-2 text-right">Số tiền</th>
+                                    <th className="border text-white px-4 py-2 text-left">Ngày giao dịch</th>
+                                    <th className="border text-white px-4 py-2 text-left">Chi tiết</th>
+                                    <th className="border text-white px-4 py-2 text-left">Trạng thái</th>
+                                    <th className="border text-white px-4 py-2 text-left">Nguồn</th>
+                                    <th className="border text-white px-4 py-2 text-right">Số tiền</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {data?.lastTransactions && data.lastTransactions.length > 0 ? (
                                     data.lastTransactions.map((transaction) => (
-                                        <tr key={transaction.id} className="hover:bg-gray-50">
+                                        <tr key={transaction.id} className="hover:bg-gray-100">
                                             <td className="border px-4 py-2">
                                                 {new Date(transaction.createdat).toLocaleDateString()}
                                             </td>
                                             <td className="border px-4 py-2">{transaction.description}</td>
                                             <td className="border px-4 py-2">
                                                 <span
-                                                    className={`inline-block px-2 py-1 rounded text-xs font-medium ${transaction.status === 'Hoàn tất'
+                                                    className={`inline-block px-2 py-1 rounded text-xs font-medium ${transaction.status === "Completed"
                                                         ? 'bg-green-100 text-green-700'
-                                                        : transaction.status === 'Đang xử lý'
+                                                        : transaction.status === 'expense'
                                                             ? 'bg-yellow-100 text-yellow-700'
                                                             : 'bg-red-100 text-red-700'
                                                         }`}
