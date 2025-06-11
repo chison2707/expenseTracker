@@ -5,6 +5,7 @@ import Dashboard from "../pages/Dashboard";
 import LayoutDefault from "../Layout/LayoutDefault";
 import Logout from "../pages/Logout";
 import EditUser from "../pages/EditUser";
+import Accounts from "../pages/Accounts";
 
 export const routes = [
     {
@@ -33,6 +34,10 @@ export const routes = [
                     {
                         path: "/editUser",
                         element: <EditUser />
+                    },
+                    {
+                        path: "/accounts",
+                        element: <Accounts />
                     }
                 ]
             }
