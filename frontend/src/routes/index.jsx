@@ -5,7 +5,6 @@ import Dashboard from "../pages/Dashboard";
 import LayoutDefault from "../Layout/LayoutDefault";
 import Logout from "../pages/Logout";
 import EditUser from "../pages/EditUser";
-import ChangePass from "../pages/ChangePass";
 
 export const routes = [
     {
@@ -34,11 +33,7 @@ export const routes = [
                     {
                         path: "/editUser",
                         element: <EditUser />
-                    },
-                    {
-                        path: "/changePass",
-                        element: <ChangePass />
-                    },
+                    }
                 ]
             }
         ]

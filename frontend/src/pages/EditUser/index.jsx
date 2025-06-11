@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { deleteAllCookie, getCookie } from "../../helpers/cookie";
-import { detail, editUser } from "../../services/userService";
+import { changePass, detail, editUser } from "../../services/userService";
 import { useDispatch } from "react-redux";
 import { NavLink, useNavigate } from "react-router-dom";
 import { checkLogin } from "../../action/login";
@@ -61,6 +61,36 @@ const EditUser = () => {
     message.success(result.message);
     navigate("/")
   }
+
+  const handleChangePassword = async () => {
+    const currentPassword = document.getElementById("currentPassword").value;
+    const newPassword = document.getElementById("newPassword").value;
+    const confirmPassword = document.getElementById("confirmPassword").value;
+
+    const options = {
+      currentPassword: currentPassword,
+      newPassword: newPassword,
+      confirmPassword: confirmPassword
+    }
+
+    const result = await changePass(options, token)
+
+    if (result.status === 422) {
+      result.errors.forEach(err => {
+        message.error(err);
+      });
+      return;
+    }
+
+    if (result.status === 400) {
+      message.error(result.message);
+      return;
+    }
+
+    message.success(result.message);
+    navigate("/");
+  };
+
 
   if (!data?.infor) {
     return <Skeleton count={3} />;
@@ -165,6 +195,44 @@ const EditUser = () => {
                 />
               </div>
             </div>
+            <hr className="text-gray-300" />
+            <p className="text-l mt-6 font-bold text-left text-black mb-6">Thay đổi mật khẩu</p>
+
+            <div className="grid grid-cols-1 gap-4 m-5">
+              <div className="mb-4">
+                <label htmlFor="currentPassword" className="block text-sm font-medium text-gray-400">
+                  Mật khẩu hiện tại
+                </label>
+                <input
+                  type="password"
+                  id="currentPassword"
+                  name="currentPassword"
+                  className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-300 "
+                />
+              </div>
+              <div className="mb-6">
+                <label htmlFor="newPassword" className="block text-sm font-medium text-gray-400">
+                  Mật Khẩu mới
+                </label>
+                <input
+                  type="password"
+                  id="newPassword"
+                  name="newPassword"
+                  className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-300"
+                />
+              </div>
+              <div className="mb-6">
+                <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-400">
+                  Xác nhận mật Khẩu mới
+                </label>
+                <input
+                  type="password"
+                  id="confirmPassword"
+                  name="confirmPassword"
+                  className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-300"
+                />
+              </div>
+            </div>
 
             <div className="flex flex-row-reverse ">
               <button
@@ -173,12 +241,13 @@ const EditUser = () => {
               >
                 Chỉnh sửa
               </button>
-              <NavLink
-                to="/changePass"
+              <button
+                type="button"
+                onClick={handleChangePassword}
                 className="w-45 ml-5 bg-indigo-400 text-white py-2 px-4 rounded-md hover:bg-violet-700 transition duration-200"
               >
                 Thay đổi mật khẩu
-              </NavLink>
+              </button>
             </div>
           </form>
         </div>
