@@ -98,10 +98,10 @@ export const detail = async (req, res) => {
     });
 };
 
-// [PATCH]/api/v1/users/changePass/:userId
+// [PATCH]/api/v1/users/changePass
 export const changePassword = async (req, res) => {
     try {
-        const userId = req.params.userId;
+        const userId = req.user.id;
 
         const { currentPassword, newPassword, confirmPassword } = req.body;
 
@@ -152,7 +152,7 @@ export const changePassword = async (req, res) => {
 // [PATCH]/api/v1/users/edit/:userId
 export const editController = async (req, res) => {
     try {
-        const userId = req.params.userId;
+        const userId = req.user.id;
 
         const { firstName, lastName, phoneNumber } = req.body;
 

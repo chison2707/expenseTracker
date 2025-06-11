@@ -16,7 +16,12 @@ export const detail = async (token) => {
     return result;
 }
 
-export const editUser = async (id, options, token) => {
-    const result = await patchAuth(`users/edit/${id}`, options, token);
+export const editUser = async (options, token) => {
+    const result = await patchAuth(`users/edit`, options, token);
+    return result;
+}
+
+export const changePass = async (options, token) => {
+    const result = await patchAuth(`users/changePass`, options, token);
     return result;
 }

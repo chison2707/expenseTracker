@@ -8,7 +8,7 @@ const router = express.Router();
 router.post("/register", registerPost, register);
 router.post("/login", login, loginPost);
 router.get("/detail", requireAuth, detail);
-router.patch("/changePass/:userId", requireAuth, changePass, changePassword);
-router.patch("/edit/:userId", requireAuth, editUser, editController);
+router.patch("/changePass", requireAuth, changePass, changePassword);
+router.patch("/edit", requireAuth, editUser, editController);
 
 export default router;

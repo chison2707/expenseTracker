@@ -44,7 +44,7 @@ const EditUser = () => {
       phoneNumber: phoneNumber
     }
 
-    const result = await editUser(data.infor.id, options, token);
+    const result = await editUser(options, token);
 
     if (result.status === 422) {
       result.errors.forEach(err => {

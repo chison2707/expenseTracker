@@ -78,8 +78,8 @@ export const changePass = (req, res, next) => {
     }
 
     if (errors.length > 0) {
-        return res.status(400).json({
-            success: false,
+        return res.json({
+            success: 400,
             errors: errors
         });
     }
