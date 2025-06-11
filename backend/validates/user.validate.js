@@ -97,16 +97,10 @@ export const editUser = (req, res, next) => {
     if (!req.body.phoneNumber) {
         errors.push('Vui lòng nhập số điện thoại!');
     }
-    if (!req.body.country) {
-        errors.push('Vui lòng nhập đất nước của bạn!');
-    }
-    if (!req.body.currency) {
-        errors.push('Vui lòng nhập đơn vị tiền tệ!');
-    }
 
     if (errors.length > 0) {
-        return res.status(400).json({
-            success: false,
+        return res.json({
+            success: 422,
             errors: errors
         });
     }

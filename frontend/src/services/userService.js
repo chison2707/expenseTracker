@@ -1,5 +1,5 @@
 import { post } from "../utils/request";
-import { getAuth } from "../utils/requestAuth";
+import { getAuth, patchAuth } from "../utils/requestAuth";
 
 export const login = async (options) => {
     const result = await post(`users/login`, options);
@@ -13,5 +13,10 @@ export const register = async (options) => {
 
 export const detail = async (token) => {
     const result = await getAuth(`users/detail`, token);
+    return result;
+}
+
+export const editUser = async (id, options, token) => {
+    const result = await patchAuth(`users/edit/${id}`, options, token);
     return result;
 }

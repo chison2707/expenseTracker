@@ -154,12 +154,12 @@ export const editController = async (req, res) => {
     try {
         const userId = req.params.userId;
 
-        const { firstName, lastName, phoneNumber, country, currency } = req.body;
+        const { firstName, lastName, phoneNumber } = req.body;
 
         const updatedUser = await pool.query({
-            text: `UPDATE tbluser SET firstName = $1, lastName = $2, country = $3, currency = $4, phone_number = $5, 
-            updatedat = CURRENT_TIMESTAMP WHERE id = $6 RETURNING *`,
-            values: [firstName, lastName, country, currency, phoneNumber, userId],
+            text: `UPDATE tbluser SET firstName = $1, lastName = $2, phone_number = $3, 
+            updatedat = CURRENT_TIMESTAMP WHERE id = $4 RETURNING *`,
+            values: [firstName, lastName, phoneNumber, userId],
         });
 
         return res.json({
