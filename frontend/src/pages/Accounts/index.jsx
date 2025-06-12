@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useState } from "react";
-import { createAccount, getAccount } from "../../services/accountService";
+import { addAmount, createAccount, getAccount } from "../../services/accountService";
 import { deleteAllCookie, getCookie } from "../../helpers/cookie";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -9,8 +9,9 @@ import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 import { formatCurrency } from "../../helpers/formatCurrency";
 import { message } from "antd";
-import { createAccountac, setAccount } from "../../action/account";
+import { addMoneyToAcc, createAccountac, setAccount } from "../../action/account";
 import AddAcounts from "./AddAcounts";
+import AddMoney from "./AddMoney";
 
 const Accounts = () => {
   const navigate = useNavigate();
@@ -20,6 +21,7 @@ const Accounts = () => {
   const account = useSelector((state) => state.accountReducer);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedAccountId, setSelectedAccountId] = useState(null);
 
   const showModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
@@ -69,6 +71,28 @@ const Accounts = () => {
     closeModal();
   };
 
+  const handleSubmitAmount = async (id, e) => {
+    console.log(id, e);
+    const amount = e.amount;
+    const result = await addAmount(id, { amount }, token);
+
+    if (result.status === 422) {
+      result.errors.forEach(err => {
+        message.error(err);
+      });
+      return;
+    }
+
+    if (result.status === 400) {
+      message.error(result.message);
+      return;
+    }
+
+    dispatch(addMoneyToAcc(result.data));
+    message.success(result.message);
+    closeModal();
+  };
+
   if (!account?.payload) {
     return <Skeleton count={3} />;
   }
@@ -104,14 +128,22 @@ const Accounts = () => {
               <p className="text-xl font-semibold mb-2">{formatCurrency(acc.account_balance)}</p>
 
               <div className="text-right">
-                <button className="text-indigo-500 hover:underline text-sm">
+                <button onClick={() => {
+                  setIsModalOpen(true);
+                  setSelectedAccountId(acc.id);
+                }} className="text-indigo-500 hover:underline text-sm">
                   Add Money
                 </button>
+                <AddMoney
+                  isOpen={isModalOpen}
+                  onClose={closeModal}
+                  onSubmit={(formData) => handleSubmitAmount(selectedAccountId, formData)}
+                />
               </div>
             </div>
           ))}
         </div>
-      </div>
+      </div >
     </>
   )
 }

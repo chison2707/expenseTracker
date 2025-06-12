@@ -3,6 +3,8 @@ const initialState = {
 };
 
 const accountReducer = (state = initialState, action) => {
+    console.log(state, action);
+
     switch (action.type) {
         case "SET_ACCOUNT":
             return {
@@ -13,6 +15,13 @@ const accountReducer = (state = initialState, action) => {
             return {
                 ...state,
                 payload: [...state.payload, action.payload]
+            };
+        case "ADD_MONEY":
+            return {
+                ...state,
+                payload: state.payload.map(acc =>
+                    acc.id === action.payload.id ? action.payload : acc
+                )
             };
         default:
             return state;

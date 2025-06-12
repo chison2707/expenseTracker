@@ -11,3 +11,10 @@ export const createAccountac = (account) => {
         payload: account
     }
 }
+
+export const addMoneyToAcc = (udtdAccount) => {
+    return {
+        type: "ADD_MONEY",
+        payload: udtdAccount
+    }
+};
