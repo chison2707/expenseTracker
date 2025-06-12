@@ -3,19 +3,21 @@ import { useState } from "react";
 import { createAccount, getAccount } from "../../services/accountService";
 import { deleteAllCookie, getCookie } from "../../helpers/cookie";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { checkLogin } from "../../action/login";
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 import { formatCurrency } from "../../helpers/formatCurrency";
 import { Form, Modal, Input, InputNumber, message } from "antd";
+import { createAccountac, setAccount } from "../../action/account";
 
 const Accounts = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const token = getCookie("token");
 
-  const [data, setData] = useState([]);
+  const account = useSelector((state) => state.accountReducer);
+
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const showModal = () => {
@@ -39,7 +41,7 @@ const Accounts = () => {
         dispatch(checkLogin(false));
       }
 
-      setData(result);
+      dispatch(setAccount(result.data));
     };
 
 
@@ -70,11 +72,12 @@ const Accounts = () => {
       return;
     }
 
+    dispatch(createAccountac(result.data))
     message.success(result.message);
-
+    setIsModalOpen(false);
   };
 
-  if (!data?.data) {
+  if (!account?.payload) {
     return <Skeleton count={3} />;
   }
 
@@ -131,7 +134,7 @@ const Accounts = () => {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-          {data.data.map((acc) => (
+          {account.payload.map((acc) => (
             <div
               key={acc.id}
               className="bg-white rounded shadow-md p-5 flex flex-col justify-between"
