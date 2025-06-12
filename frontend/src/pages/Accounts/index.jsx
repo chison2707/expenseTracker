@@ -10,6 +10,7 @@ import 'react-loading-skeleton/dist/skeleton.css';
 import { formatCurrency } from "../../helpers/formatCurrency";
 import { Form, Modal, Input, InputNumber, message } from "antd";
 import { createAccountac, setAccount } from "../../action/account";
+import AddAcounts from "./AddAcounts";
 
 const Accounts = () => {
   const navigate = useNavigate();
@@ -20,17 +21,8 @@ const Accounts = () => {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const showModal = () => {
-    setIsModalOpen(true);
-  };
-
-  const handleOk = () => {
-    setIsModalOpen(false);
-  };
-
-  const handleCancel = () => {
-    setIsModalOpen(false);
-  };
+  const showModal = () => setIsModalOpen(true);
+  const closeModal = () => setIsModalOpen(false);
 
   useEffect(() => {
     const fetchAccount = async () => {
@@ -74,7 +66,7 @@ const Accounts = () => {
 
     dispatch(createAccountac(result.data))
     message.success(result.message);
-    setIsModalOpen(false);
+    closeModal();
   };
 
   if (!account?.payload) {
@@ -90,47 +82,11 @@ const Accounts = () => {
           <button onClick={showModal} className="bg-black text-white px-4 py-2 rounded hover:bg-gray-800 transition">
             + Add
           </button>
-          <Modal
-            title="Basic Modal"
-            closable={{ 'aria-label': 'Custom Close Button' }}
-            open={isModalOpen}
-            onOk={handleOk}
-            onCancel={handleCancel}
-            footer={null}
-          >
-            <Form name="create-account" onFinish={handleSubmit}>
-              <Form.Item
-                label="Tên nguồn tiền"
-                name="name"
-                rules={[{ required: true, message: 'Vui lòng nhập tên nguồn tiền!' }]}
-              >
-                <Input />
-              </Form.Item>
-
-              <Form.Item
-                label="Số tài khoản"
-                name="account_number"
-              >
-                <Input />
-              </Form.Item>
-
-              <Form.Item
-                label="Số tiền"
-                name="amount"
-              >
-                <InputNumber min={1000} style={{ width: '100%' }} />
-              </Form.Item>
-
-              <Form.Item>
-                <div className="text-right">
-                  <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
-                    Submit
-                  </button>
-                </div>
-              </Form.Item>
-            </Form>
-
-          </Modal>
+          <AddAcounts
+            isOpen={isModalOpen}
+            onClose={closeModal}
+            onSubmit={handleSubmit}
+          />
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">

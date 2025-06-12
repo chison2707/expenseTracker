@@ -1,63 +1,48 @@
-import { Form } from "antd"
+import { Modal, Form, Input, InputNumber } from "antd";
 
+const AddAcounts = (props) => {
+    const { isOpen, onClose, onSubmit } = props;
+    const [form] = Form.useForm();
 
-const AddAcounts = () => {
-    const handleSubmit = (values) => {
-        console.log("Giá trị form:", values);
+    const handleFinish = (e) => {
+        onSubmit(e);
+        form.resetFields();
     };
 
     return (
         <>
-            <Form name="create-room"
-                // form={form}
-                onFinish={handleSubmit}
-            // initialValues={record}
+            <Modal
+                title="Thêm nguồn tiền"
+                open={isOpen}
+                onCancel={onClose}
+                footer={null}
             >
-                <Form.Item
-                    label="Tên phòng"
-                    name="roomName"
-                    rules={[{ required: true, message: 'Vui lòng nhập tên phòng!' }]}
-                >
-                    <Input />
-                </Form.Item>
-
-                <Form.Item
-                    label="Số người tối đa"
-                    name="quantityPeople"
-                >
-                    <InputNumber min={1} />
-                </Form.Item>
-
-                <Form.Item
-                    label="Mô tả"
-                    name="description"
-                >
-                    <Input.TextArea />
-                </Form.Item>
-
-                <Form.Item
-                    name="services"
-                    noStyle
-                >
-                    <Select
-                        style={{ width: '100%' }}
-                        mode="multiple"
+                <Form form={form} layout="vertical" onFinish={handleFinish}>
+                    <Form.Item
+                        label="Tên nguồn tiền"
+                        name="name"
+                        rules={[{ required: true, message: 'Vui lòng nhập tên nguồn tiền!' }]}
                     >
-                        <Option value="wifi">Wifi</Option>
-                        <Option value="projector">Máy chiếu</Option>
-                        <Option value="whiteboard">Bảng trắng</Option>
-                        <Option value="refreshments">Đồ uống</Option>
-                    </Select>
-                </Form.Item>
+                        <Input />
+                    </Form.Item>
 
-                <Form.Item valuePropName="checked" label="Trạng thái" name="status">
-                    <Switch />
-                </Form.Item>
+                    <Form.Item label="Số tài khoản" name="account_number">
+                        <Input />
+                    </Form.Item>
 
-                <Form.Item>
-                    <Button type="primary" htmlType="submit">Cập nhật</Button>
-                </Form.Item>
-            </Form>
+                    <Form.Item label="Số tiền" name="amount">
+                        <InputNumber min={1000} style={{ width: '100%' }} />
+                    </Form.Item>
+
+                    <Form.Item>
+                        <div className="text-right">
+                            <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                                Submit
+                            </button>
+                        </div>
+                    </Form.Item>
+                </Form>
+            </Modal>
         </>
     )
 }
