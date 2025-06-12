@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useState } from "react";
-import { getAccount } from "../../services/accountService";
+import { createAccount, getAccount } from "../../services/accountService";
 import { deleteAllCookie, getCookie } from "../../helpers/cookie";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
@@ -8,7 +8,7 @@ import { checkLogin } from "../../action/login";
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 import { formatCurrency } from "../../helpers/formatCurrency";
-import { Form, Modal, Input, InputNumber } from "antd";
+import { Form, Modal, Input, InputNumber, message } from "antd";
 
 const Accounts = () => {
   const navigate = useNavigate();
@@ -46,8 +46,32 @@ const Accounts = () => {
     fetchAccount();
   }, []);
 
-  const handleSubmit = (values) => {
-    console.log("Giá trị form:", values);
+  const handleSubmit = async (e) => {
+    const name = e.name;
+    const account_number = e.account_number;
+    const amount = e.amount;
+
+    const options = {
+      name: name,
+      account_number: account_number,
+      amount: amount
+    }
+
+    const result = await createAccount(options, token);
+    if (result.status === 422) {
+      result.errors.forEach(err => {
+        message.error(err);
+      });
+      return;
+    }
+
+    if (result.status === 400) {
+      message.error(result.message);
+      return;
+    }
+
+    message.success(result.message);
+
   };
 
   if (!data?.data) {
