@@ -8,7 +8,7 @@ import { checkLogin } from "../../action/login";
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 import { formatCurrency } from "../../helpers/formatCurrency";
-import { Form, Modal, Input, InputNumber, message } from "antd";
+import { message } from "antd";
 import { createAccountac, setAccount } from "../../action/account";
 import AddAcounts from "./AddAcounts";
 

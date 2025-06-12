@@ -6,6 +6,7 @@ import LayoutDefault from "../Layout/LayoutDefault";
 import Logout from "../pages/Logout";
 import EditUser from "../pages/EditUser";
 import Accounts from "../pages/Accounts";
+import Transaction from "../pages/Transaction";
 
 export const routes = [
     {
@@ -38,7 +39,11 @@ export const routes = [
                     {
                         path: "/accounts",
                         element: <Accounts />
-                    }
+                    },
+                    {
+                        path: "/transactions",
+                        element: <Transaction />
+                    },
                 ]
             }
         ]
