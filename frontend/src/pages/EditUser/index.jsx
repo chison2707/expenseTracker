@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import { deleteAllCookie, getCookie } from "../../helpers/cookie";
 import { changePass, detail, editUser } from "../../services/userService";
 import { useDispatch } from "react-redux";
-import { NavLink, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { checkLogin } from "../../action/login";
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';

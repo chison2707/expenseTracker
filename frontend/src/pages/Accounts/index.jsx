@@ -1,22 +1,42 @@
+import { useEffect } from "react";
+import { useState } from "react";
+import { getAccount } from "../../services/accountService";
+import { deleteAllCookie, getCookie } from "../../helpers/cookie";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { checkLogin } from "../../action/login";
+import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
+import { formatCurrency } from "../../helpers/formatCurrency";
+
 const Accounts = () => {
-    const accounts = [
-        {
-            type: "Cash",
-            icon: "💰",
-            color: "bg-red-500",
-            number: "5480*****3081",
-            date: "Sunday, September 15, 2024",
-            amount: "BGN 1,000.00",
-        },
-        {
-            type: "Crypto",
-            icon: "₿",
-            color: "bg-yellow-500",
-            number: "4852*****2419",
-            date: "Sunday, September 15, 2024",
-            amount: "BGN 110.00",
-        },
-    ];
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const token = getCookie("token");
+    const [data, setData] = useState([]);
+
+    useEffect(() => {
+        const fetchAccount = async () => {
+            const result = await getAccount(token);
+            if (result.code === 401) {
+                deleteAllCookie();
+                navigate("/login");
+                dispatch(checkLogin(false));
+            }
+
+            setData(result);
+        };
+
+
+        fetchAccount();
+    }, []);
+    console.log(data);
+
+    if (!data?.data) {
+        return <Skeleton count={3} />;
+    }
+
+
     return (
         <>
             <div className="min-h-screen bg-gray-100 p-8">
@@ -28,24 +48,18 @@ const Accounts = () => {
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-                    {accounts.map((acc, idx) => (
+                    {data.data.map((acc) => (
                         <div
-                            key={idx}
+                            key={acc.id}
                             className="bg-white rounded shadow-md p-5 flex flex-col justify-between"
                         >
                             <div className="flex items-center gap-3 mb-2">
-                                <div
-                                    className={`w-10 h-10 flex items-center justify-center text-white rounded-full text-xl ${acc.color}`}
-                                >
-                                    {acc.icon}
-                                </div>
-                                <h2 className="text-lg font-bold">{acc.type}</h2>
-                                <span className="text-green-500 text-sm">✔</span>
+                                <h2 className="text-lg font-bold">{acc.account_name}</h2>
                             </div>
 
-                            <p className="text-sm text-gray-500">{acc.number}</p>
-                            <p className="text-sm text-gray-400 mb-2">{acc.date}</p>
-                            <p className="text-xl font-semibold mb-2">{acc.amount}</p>
+                            <p className="text-sm text-gray-500">{acc.account_number}</p>
+                            <p className="text-sm text-gray-400 mb-2">{acc.createdat}</p>
+                            <p className="text-xl font-semibold mb-2">{formatCurrency(acc.account_balance)}</p>
 
                             <div className="text-right">
                                 <button className="text-indigo-500 hover:underline text-sm">

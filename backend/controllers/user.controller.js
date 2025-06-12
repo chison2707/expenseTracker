@@ -105,8 +105,6 @@ export const changePassword = async (req, res) => {
 
         const { currentPassword, newPassword, confirmPassword } = req.body;
 
-        console.log(currentPassword, newPassword, confirmPassword);
-
         const userExist = await pool.query({
             text: `SELECT * FROM tbluser WHERE id = $1`,
             values: [userId],
