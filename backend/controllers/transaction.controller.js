@@ -1,5 +1,6 @@
 import { pool } from "../config/database.js";
 import { getMonthName } from "../helpers/month.js";
+import paginationHelper from "../helpers/pagination.js";
 
 //[GET] /api/v1/transactions
 export const getTransactions = async (req, res) => {
@@ -13,22 +14,55 @@ export const getTransactions = async (req, res) => {
 
         const sevenDaysAgo = _sevenDaysAgo.toISOString().split("T")[0];
 
-        const { df, dt, s } = req.query;
+        const { df, dt, s, page = 1, limit = 10 } = req.query;
 
         const startDate = new Date(df || sevenDaysAgo);
         const endDate = new Date(dt || new Date());
 
-        const transactions = await pool.query({
-            text: `SELECT * FROM tbltransaction WHERE user_id = $1 AND createdat BETWEEN $2 AND $3 
-            OR (description ILIKE '%' || $4 || '%' OR status ILIKE '%' || $4 || '%' OR source ILIKE '%' || $4 || '%') 
-            ORDER BY id DESC`,
-            values: [userId, startDate, endDate, s],
+        const countResult = await pool.query({
+            text: `
+                SELECT COUNT(*) FROM tbltransaction 
+                WHERE user_id = $1 AND (
+                    createdat BETWEEN $2 AND $3 
+                    OR description ILIKE '%' || $4 || '%' 
+                    OR status ILIKE '%' || $4 || '%' 
+                    OR source ILIKE '%' || $4 || '%'
+                )
+            `,
+            values: [userId, startDate, endDate, s]
+        });
+
+        const total = parseInt(countResult.rows[0].count);
+        let objPagination = paginationHelper(
+            {
+                currentPage: 1,
+                limitItems: 10
+            },
+            { page, limit },
+            total
+        );
+        //end pagination
+
+        const transactionResult = await pool.query({
+            text: `
+                SELECT * FROM tbltransaction 
+                WHERE user_id = $1 AND (
+                    createdat BETWEEN $2 AND $3 
+                    OR description ILIKE '%' || $4 || '%' 
+                    OR status ILIKE '%' || $4 || '%' 
+                    OR source ILIKE '%' || $4 || '%'
+                )
+                ORDER BY id DESC 
+                LIMIT $5 OFFSET $6
+            `,
+            values: [userId, startDate, endDate, s, objPagination.limitItems, objPagination.skip]
         });
 
         return res.json({
             status: 200,
             message: "Lấy thông tin giao dịch thành công!",
-            data: transactions.rows,
+            data: transactionResult.rows,
+            totalPage: objPagination.totalPage
         });
     } catch (error) {
         return res.json({
