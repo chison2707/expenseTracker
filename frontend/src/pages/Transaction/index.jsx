@@ -16,9 +16,14 @@ const Transaction = () => {
   const queryParams = new URLSearchParams(location.search);
   const pageFromUrl = parseInt(queryParams.get("page")) || 1;
   const sFromUrl = queryParams.get("s") || "";
+  const startDateFromUrl = queryParams.get("df") || "";
+  const endDateFromUrl = queryParams.get("dt") || "";
 
   const [page, setPage] = useState(pageFromUrl);
   const [search, setSearch] = useState(sFromUrl);
+  const [startDate, setStartDate] = useState(startDateFromUrl);
+  const [endDate, setEndDate] = useState(endDateFromUrl || new Date().toISOString().split("T")[0]);
+
 
   const [data, setData] = useState([]);
   const token = getCookie("token");
@@ -29,7 +34,6 @@ const Transaction = () => {
 
       const params = new URLSearchParams(location.search);
       params.set("page", newPage);
-
       navigate({ search: params.toString() });
     }
   };
@@ -43,9 +47,22 @@ const Transaction = () => {
     }
   }
 
+  const handleDateChange = (type, value) => {
+    const params = new URLSearchParams(location.search);
+    if (type === 'df') {
+      setStartDate(value);
+      params.set("df", value);
+    } else {
+      setEndDate(value);
+      params.set("dt", value);
+    }
+
+    navigate({ search: params.toString() });
+  }
+
   useEffect(() => {
     const fetchTransaction = async () => {
-      const result = await getTransaction(token, { page, search });
+      const result = await getTransaction(token, { page, search, startDate, endDate });
       if (result.code === 401) {
         deleteAllCookie();
         navigate("/login");
@@ -56,7 +73,7 @@ const Transaction = () => {
 
 
     fetchTransaction();
-  }, [page, search])
+  }, [page, search, startDate, endDate])
 
   if (!data?.data) {
     return <Skeleton count={3} />;
@@ -70,9 +87,14 @@ const Transaction = () => {
         <div className="flex flex-wrap gap-4 items-center mb-6">
           <div className="flex items-center gap-2 text-sm">
             <label>Filter</label>
-            <input type="date" className="border rounded px-2 py-1" defaultValue="2024-09-08" />
+            <input type="date"
+              className="border rounded px-2 py-1"
+              onChange={(e) => handleDateChange('df', e.target.value)} />
             <span>to</span>
-            <input type="date" className="border rounded px-2 py-1" defaultValue="2024-09-18" />
+            <input type="date"
+              className="border rounded px-2 py-1"
+              defaultValue={new Date().toISOString().split("T")[0]}
+              onChange={(e) => handleDateChange('dt', e.target.value)} />
           </div>
 
           <input
