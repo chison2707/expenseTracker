@@ -20,7 +20,7 @@ export const getTransactions = async (req, res) => {
 
         const transactions = await pool.query({
             text: `SELECT * FROM tbltransaction WHERE user_id = $1 AND createdat BETWEEN $2 AND $3 
-            AND (description ILIKE '%' || $4 || '%' OR status ILIKE '%' || $4 || '%' OR source ILIKE '%' || $4 || '%') 
+            OR (description ILIKE '%' || $4 || '%' OR status ILIKE '%' || $4 || '%' OR source ILIKE '%' || $4 || '%') 
             ORDER BY id DESC`,
             values: [userId, startDate, endDate, s],
         });

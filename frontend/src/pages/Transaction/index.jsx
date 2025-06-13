@@ -1,55 +1,31 @@
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { getTransaction } from "../../services/transaction";
+import { deleteAllCookie, getCookie } from "../../helpers/cookie";
+import { checkLogin } from "../../action/login";
+import { useDispatch } from "react-redux";
+
 const Transaction = () => {
-  const transactions = [
-    {
-      date: "Sun Sep 15 2024",
-      description: "Youtube support codewave",
-      status: "Completed",
-      source: "Cash",
-      amount: "-BGN 500.00",
-    },
-    {
-      date: "Sun Sep 15 2024",
-      description: "Received (Cash - Crypto)",
-      status: "Completed",
-      source: "Crypto",
-      amount: "+BGN 100.00",
-    },
-    {
-      date: "Sun Sep 15 2024",
-      description: "Transfer (Cash - Crypto)",
-      status: "Completed",
-      source: "Cash",
-      amount: "-BGN 100.00",
-    },
-    {
-      date: "Sun Sep 15 2024",
-      description: "Crypto (Deposit)",
-      status: "Completed",
-      source: "Crypto",
-      amount: "+BGN 10.00",
-    },
-    {
-      date: "Sun Sep 15 2024",
-      description: "Crypto (Deposit)",
-      status: "Completed",
-      source: "Crypto",
-      amount: "+BGN 90.00",
-    },
-    {
-      date: "Sun Sep 15 2024",
-      description: "Crypto (Initial Deposit)",
-      status: "Completed",
-      source: "Crypto",
-      amount: "+BGN 10.00",
-    },
-    {
-      date: "Sun Sep 15 2024",
-      description: "Cash (Initial Deposit)",
-      status: "Completed",
-      source: "Cash",
-      amount: "+BGN 1,000.00",
-    },
-  ];
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const [data, setData] = useState([]);
+  const token = getCookie("token");
+  useEffect(() => {
+    const fetchTransaction = async () => {
+      const result = await getTransaction(token);
+      if (result.code === 401) {
+        deleteAllCookie();
+        navigate("/login");
+        dispatch(checkLogin(false));
+      }
+      setData(result);
+    };
+
+
+    fetchTransaction();
+  }, [])
+
+  console.log(data.data);
 
 
   return (
@@ -92,9 +68,9 @@ const Transaction = () => {
               </tr>
             </thead>
             <tbody>
-              {transactions.map((item, index) => (
-                <tr key={index} className="border-b hover:bg-gray-50 text-sm">
-                  <td className="py-3 px-4 whitespace-nowrap">{item.date}</td>
+              {data.data.map((item) => (
+                <tr key={item.id} className="border-b hover:bg-gray-50 text-sm">
+                  <td className="py-3 px-4 whitespace-nowrap">{item.createdat}</td>
                   <td className="py-3 px-4">{item.description}</td>
                   <td className="py-3 px-4">
                     <span className="text-green-600 font-medium">● {item.status}</span>
