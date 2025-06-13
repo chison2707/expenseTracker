@@ -7,6 +7,7 @@ import { useDispatch } from "react-redux";
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 import TableTransaction from "./TableTransaction";
+import Pagination from "./pagination";
 
 const Transaction = () => {
   const navigate = useNavigate();
@@ -27,16 +28,6 @@ const Transaction = () => {
 
   const [data, setData] = useState([]);
   const token = getCookie("token");
-
-  const handlePageChange = (newPage) => {
-    if (newPage >= 1 && newPage <= data.totalPage) {
-      setPage(newPage);
-
-      const params = new URLSearchParams(location.search);
-      params.set("page", newPage);
-      navigate({ search: params.toString() });
-    }
-  };
 
   const handleInput = (e) => {
     if (e.key === "Enter") {
@@ -59,6 +50,14 @@ const Transaction = () => {
 
     navigate({ search: params.toString() });
   }
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    setPage(parseInt(params.get("page")) || 1);
+    setSearch(params.get("s") || "");
+    setStartDate(params.get("df") || "");
+    setEndDate(params.get("dt") || new Date().toISOString().split("T")[0]);
+  }, [location.search]);
 
   useEffect(() => {
     const fetchTransaction = async () => {
@@ -114,44 +113,7 @@ const Transaction = () => {
         <div className="overflow-x-auto">
           <TableTransaction data={data} />
 
-          <div className="flex justify-center items-center mt-6">
-            <nav className="inline-flex items-center gap-2">
-              <button
-                className={`px-3 py-1 rounded border text-sm transition ${data.currentPage === 1
-                  ? "bg-gray-200 text-gray-500 cursor-not-allowed"
-                  : "bg-white hover:bg-gray-100"
-                  }`}
-                disabled={data.currentPage === 1}
-                onClick={() => handlePageChange(data.currentPage - 1)}
-              >
-                Previous
-              </button>
-
-              {Array.from({ length: data.totalPage || 1 }, (_, i) => i + 1).map((page) => (
-                <button
-                  key={page}
-                  onClick={() => handlePageChange(page)}
-                  className={`px-3 py-1 rounded border text-sm transition-all duration-200 ${data.currentPage === page
-                    ? "bg-black text-white font-semibold"
-                    : "bg-white text-gray-700 hover:bg-gray-100"
-                    }`}
-                >
-                  {page}
-                </button>
-              ))}
-
-              <button
-                className={`px-3 py-1 rounded border text-sm transition ${data.currentPage === data.totalPage
-                  ? "bg-gray-200 text-gray-500 cursor-not-allowed"
-                  : "bg-white hover:bg-gray-100"
-                  }`}
-                disabled={data.currentPage === data.totalPage}
-                onClick={() => handlePageChange(data.currentPage + 1)}
-              >
-                Next
-              </button>
-            </nav>
-          </div>
+          <Pagination data={data} />
         </div>
       </div>
     </>
