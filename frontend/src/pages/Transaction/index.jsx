@@ -8,6 +8,7 @@ import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 import TableTransaction from "./TableTransaction";
 import Pagination from "./pagination";
+import Search from "./Search";
 
 const Transaction = () => {
   const navigate = useNavigate();
@@ -28,15 +29,6 @@ const Transaction = () => {
 
   const [data, setData] = useState([]);
   const token = getCookie("token");
-
-  const handleInput = (e) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      const params = new URLSearchParams(location.search);
-      params.set("s", search);
-      navigate({ search: params.toString() });
-    }
-  }
 
   const handleDateChange = (type, value) => {
     const params = new URLSearchParams(location.search);
@@ -96,13 +88,7 @@ const Transaction = () => {
               onChange={(e) => handleDateChange('dt', e.target.value)} />
           </div>
 
-          <input
-            type="text"
-            placeholder="Search now..."
-            onChange={(e) => setSearch(e.target.value)}
-            onKeyDown={handleInput}
-            className="border px-3 py-1 rounded text-sm w-64"
-          />
+          <Search setSearch={setSearch} />
 
           <div className="ml-auto flex gap-2">
             <button className="bg-black text-white px-4 py-1 rounded text-sm">+ Pay</button>
