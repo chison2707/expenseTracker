@@ -62,7 +62,8 @@ export const getTransactions = async (req, res) => {
             status: 200,
             message: "Lấy thông tin giao dịch thành công!",
             data: transactionResult.rows,
-            totalPage: objPagination.totalPage
+            totalPage: objPagination.totalPage,
+            currentPage: objPagination.currentPage
         });
     } catch (error) {
         return res.json({
