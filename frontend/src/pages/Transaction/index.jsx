@@ -15,8 +15,10 @@ const Transaction = () => {
 
   const queryParams = new URLSearchParams(location.search);
   const pageFromUrl = parseInt(queryParams.get("page")) || 1;
+  const sFromUrl = queryParams.get("s") || "";
 
   const [page, setPage] = useState(pageFromUrl);
+  const [search, setSearch] = useState(sFromUrl);
 
   const [data, setData] = useState([]);
   const token = getCookie("token");
@@ -32,9 +34,18 @@ const Transaction = () => {
     }
   };
 
+  const handleInput = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      const params = new URLSearchParams(location.search);
+      params.set("s", search);
+      navigate({ search: params.toString() });
+    }
+  }
+
   useEffect(() => {
     const fetchTransaction = async () => {
-      const result = await getTransaction(token, { page });
+      const result = await getTransaction(token, { page, search });
       if (result.code === 401) {
         deleteAllCookie();
         navigate("/login");
@@ -45,9 +56,8 @@ const Transaction = () => {
 
 
     fetchTransaction();
-  }, [page])
+  }, [page, search])
 
-  console.log(page);
   if (!data?.data) {
     return <Skeleton count={3} />;
   }
@@ -68,6 +78,8 @@ const Transaction = () => {
           <input
             type="text"
             placeholder="Search now..."
+            onChange={(e) => setSearch(e.target.value)}
+            onKeyDown={handleInput}
             className="border px-3 py-1 rounded text-sm w-64"
           />
 

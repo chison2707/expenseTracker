@@ -22,12 +22,11 @@ export const getTransactions = async (req, res) => {
         const countResult = await pool.query({
             text: `
                 SELECT COUNT(*) FROM tbltransaction 
-                WHERE user_id = $1 AND (
+                WHERE user_id = $1 AND 
                     createdat BETWEEN $2 AND $3 
-                    OR description ILIKE '%' || $4 || '%' 
+                    AND (description ILIKE '%' || $4 || '%' 
                     OR status ILIKE '%' || $4 || '%' 
-                    OR source ILIKE '%' || $4 || '%'
-                )
+                    OR source ILIKE '%' || $4 || '%')
             `,
             values: [userId, startDate, endDate, s]
         });
@@ -46,9 +45,9 @@ export const getTransactions = async (req, res) => {
         const transactionResult = await pool.query({
             text: `
                 SELECT * FROM tbltransaction 
-                WHERE user_id = $1 AND (
+                WHERE user_id = $1 AND 
                     createdat BETWEEN $2 AND $3 
-                    OR description ILIKE '%' || $4 || '%' 
+                    AND (description ILIKE '%' || $4 || '%' 
                     OR status ILIKE '%' || $4 || '%' 
                     OR source ILIKE '%' || $4 || '%'
                 )
