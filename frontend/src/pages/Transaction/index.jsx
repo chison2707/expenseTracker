@@ -9,6 +9,7 @@ import 'react-loading-skeleton/dist/skeleton.css';
 import TableTransaction from "./TableTransaction";
 import Pagination from "./pagination";
 import Search from "./Search";
+import Datetime from "./Datetime";
 
 const Transaction = () => {
   const navigate = useNavigate();
@@ -26,22 +27,8 @@ const Transaction = () => {
   const [startDate, setStartDate] = useState(startDateFromUrl);
   const [endDate, setEndDate] = useState(endDateFromUrl || new Date().toISOString().split("T")[0]);
 
-
   const [data, setData] = useState([]);
   const token = getCookie("token");
-
-  const handleDateChange = (type, value) => {
-    const params = new URLSearchParams(location.search);
-    if (type === 'df') {
-      setStartDate(value);
-      params.set("df", value);
-    } else {
-      setEndDate(value);
-      params.set("dt", value);
-    }
-
-    navigate({ search: params.toString() });
-  }
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -76,17 +63,7 @@ const Transaction = () => {
         <h2 className="text-2xl font-semibold mb-6">Transactions Activity</h2>
 
         <div className="flex flex-wrap gap-4 items-center mb-6">
-          <div className="flex items-center gap-2 text-sm">
-            <label>Filter</label>
-            <input type="date"
-              className="border rounded px-2 py-1"
-              onChange={(e) => handleDateChange('df', e.target.value)} />
-            <span>to</span>
-            <input type="date"
-              className="border rounded px-2 py-1"
-              defaultValue={new Date().toISOString().split("T")[0]}
-              onChange={(e) => handleDateChange('dt', e.target.value)} />
-          </div>
+          <Datetime setStartDate={setStartDate} setEndDate={setEndDate} />
 
           <Search setSearch={setSearch} />
 
