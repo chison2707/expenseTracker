@@ -69,7 +69,7 @@ const Transaction = () => {
 
           <Search setSearch={setSearch} />
 
-          <ButtonDt data={data} />
+          <ButtonDt data={data} token={token} />
         </div>
 
         <div className="overflow-x-auto">

@@ -15,8 +15,8 @@ export const transaction = (req, res, next) => {
     }
 
     if (errors.length > 0) {
-        return res.status(400).json({
-            success: false,
+        return res.json({
+            status: 422,
             errors: errors
         });
     }
@@ -31,6 +31,9 @@ export const tranferMoneyVld = (req, res, next) => {
     if (!req.body.toAccount) {
         errors.push('Vui lòng nhập tài khoản nhận tiền!');
     }
+    if (req.body.toAccount === req.body.fromAccount) {
+        errors.push('Vui lòng chọn hai tài khoản khác nhau!');
+    }
     if (!req.body.amount) {
         errors.push('Vui lòng nhập số tiền!');
     }
@@ -40,8 +43,8 @@ export const tranferMoneyVld = (req, res, next) => {
     }
 
     if (errors.length > 0) {
-        return res.status(400).json({
-            success: false,
+        return res.json({
+            status: 422,
             errors: errors
         });
     }
