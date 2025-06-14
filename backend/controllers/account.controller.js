@@ -135,10 +135,10 @@ export const addMoneyToAccount = async (req, res) => {
 export const deleteAccount = async (req, res) => {
     try {
         const userId = req.user.id;
-        const { id } = req.params;
+        const id = req.params.id;
 
         const accountResult = await pool.query({
-            text: `SELECT * FROM tblaccount WHEHRE id =$1 AND user_id = $2`,
+            text: `SELECT * FROM tblaccount WHERE id =$1 AND user_id = $2`,
             values: [id, userId],
         });
         const account = accountResult.rows[0];
