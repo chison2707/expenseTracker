@@ -130,3 +130,40 @@ export const addMoneyToAccount = async (req, res) => {
         });
     }
 };
+
+// [PATCH]/api/v1/accounts/deleteAccount/:id
+export const deleteAccount = async (req, res) => {
+    try {
+        const userId = req.user.id;
+        const { id } = req.params;
+
+        const accountResult = await pool.query({
+            text: `SELECT * FROM tblaccount WHEHRE id =$1 AND user_id = $2`,
+            values: [id, userId],
+        });
+        const account = accountResult.rows[0];
+
+        await pool.query("BEGIN");
+
+        await pool.query({
+            text: `DELETE FROM tbltransaction WHERE source= $1`,
+            values: [account.account_name],
+        });
+
+        await pool.query({
+            text: `DELETE FROM tblaccount WHERE id= $1`,
+            values: [id],
+        });
+        await pool.query("COMMIT");
+
+        return res.json({
+            status: 200,
+            message: "Xóa thành công!",
+        });
+    } catch (error) {
+        return res.json({
+            status: 500,
+            message: error.message
+        });
+    }
+};
