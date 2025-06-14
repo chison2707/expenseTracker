@@ -6,7 +6,7 @@ import { getAccount } from "../../services/accountService";
 import { tranferMoney } from "../../services/transaction";
 
 const ButtonDt = (props) => {
-    const { data, token } = props;
+    const { data, token, onReload } = props;
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [form] = Form.useForm();
     const [account, setAccount] = useState([]);
@@ -71,7 +71,7 @@ const ButtonDt = (props) => {
             return;
         }
 
-        console.log(result);
+        onReload();
 
         message.success(result.message);
         form.resetFields();

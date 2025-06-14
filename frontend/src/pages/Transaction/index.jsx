@@ -40,20 +40,23 @@ const Transaction = () => {
     setEndDate(params.get("dt") || new Date().toISOString().split("T")[0]);
   }, [location.search]);
 
+  const fetchTransaction = async () => {
+    const result = await getTransaction(token, { page, search, startDate, endDate });
+    if (result.code === 401) {
+      deleteAllCookie();
+      navigate("/login");
+      dispatch(checkLogin(false));
+    }
+    setData(result);
+  };
+
   useEffect(() => {
-    const fetchTransaction = async () => {
-      const result = await getTransaction(token, { page, search, startDate, endDate });
-      if (result.code === 401) {
-        deleteAllCookie();
-        navigate("/login");
-        dispatch(checkLogin(false));
-      }
-      setData(result);
-    };
-
-
     fetchTransaction();
   }, [page, search, startDate, endDate]);
+
+  const handleReload = () => {
+    fetchTransaction();
+  }
 
   if (!data?.data) {
     return <Skeleton count={3} />;
@@ -69,7 +72,7 @@ const Transaction = () => {
 
           <Search setSearch={setSearch} />
 
-          <ButtonDt data={data} token={token} />
+          <ButtonDt data={data} token={token} onReload={handleReload} />
         </div>
 
         <div className="overflow-x-auto">
