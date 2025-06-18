@@ -17,7 +17,7 @@ import { formatCurrency } from "../../helpers/formatCurrency";
 import { message } from "antd";
 import AddAcounts from "./AddAcounts";
 import AddMoney from "./AddMoney";
-import DelAcc from "./delAcc";
+import DelAcc from "./DelAcc";
 
 const Accounts = () => {
   const navigate = useNavigate();

@@ -7,7 +7,7 @@ import { useDispatch } from "react-redux";
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 import TableTransaction from "./TableTransaction";
-import Pagination from "./pagination";
+import Pagination from "./Pagination";
 import Search from "./Search";
 import Datetime from "./Datetime";
 import ButtonDt from "./ButtonDt";
