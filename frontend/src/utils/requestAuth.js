@@ -1,4 +1,4 @@
-const API_DOMAIN = 'http://localhost:3000/api/v1/';
+const API_DOMAIN = import.meta.env.VITE_API_DOMAIN;
 
 export const getAuth = async (path, token) => {
     const response = await fetch(API_DOMAIN + path, {
